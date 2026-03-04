@@ -12,8 +12,11 @@
     <thead>
         <tr>
             <th>Title</th>
+            <th>Description</th>
             <th>Status</th>
             <th>Created at</th>
+            <th>Updated at</th>
+            <th>Actions</th>
         </tr>
     </thead>
 
@@ -21,6 +24,7 @@
     {% for task in tasks %}
         <tr>
             <td>{{ task.title }}</td>
+            <td>{{ task.description }}</td>
             <td>
                 {% if task.isDone %}
                     Done
@@ -29,6 +33,16 @@
                 {% endif %}
             </td>
             <td>{{ task.createdAt|date('Y-m-d H:i') }}</td>
+            <td>
+                {% if task.updatedAt %}
+                    {{ task.updatedAt|date('Y-m-d H:i') }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ path('app_task_edit', {id: task.id}) }}">Edit</a>
+            </td>
         </tr>
     {% else %}
         <tr>
