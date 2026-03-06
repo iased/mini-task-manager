@@ -44,6 +44,24 @@
                 <a href="{{ path('app_task_edit', {id: task.id}) }}">Edit</a>
 
                 <form method="post"
+                    action="{{ path('app_task_toggle', {id: task.id}) }}"
+                    style="display:inline;"
+                >
+                    <input type="hidden"
+                        name="_token"
+                        value="{{ csrf_token('toggle' ~ task.id) }}"
+                    >
+
+                    <button type="submit">
+                        {% if task.isDone %}
+                            Reopen
+                        {% else %}
+                            Mark as Done
+                        {% endif %}
+                    </button>
+                </form>
+
+                <form method="post"
                     action="{{ path('app_task_delete', {id: task.id}) }}"
                     style="display:inline;"
                 >

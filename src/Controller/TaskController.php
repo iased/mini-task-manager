@@ -91,5 +91,21 @@ final class TaskController extends AbstractController
 
         return $this->redirectToRoute('app_task_index');
     }
+
+    #[Route('/tasks/{id}/toggle', name: 'app_task_toggle', methods: ['POST'])]
+    public function toggle(
+        Task $task,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        if ($this->isCsrfTokenValid('toggle'.$task->getId(), $request->request->get('_token'))) {
+            $task->setIsDone(!$task->isDone());
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Task status updated successfully.');
+        }
+
+        return $this->redirectToRoute('app_task_index');
+    }
 }
 
