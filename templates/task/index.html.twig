@@ -10,10 +10,25 @@
 
 <p>
     Filter:
-    <a href="{{ path('app_task_index') }}">All</a> |
-    <a href="{{ path('app_task_index', {status: 'open'}) }}">Open</a> |
-    <a href="{{ path('app_task_index', {status: 'done'}) }}">Done</a>
+    <a href="{{ path('app_task_index', {'search': current_search}) }}">All</a> |
+    <a href="{{ path('app_task_index', {'status': 'open', 'search': app.request.get('search')}) }}">Open</a> |
+    <a href="{{ path('app_task_index', {'status': 'done', 'search': app.request.get('search')}) }}">Done</a>
 </p>
+
+<form method="get" action="{{ path('app_task_index') }}">
+    <input 
+        type="text" 
+        name="search" 
+        placeholder="Search by title..."
+        value="{{ current_search }}"
+    >
+
+    {% if current_status %}
+        <input type="hidden" name="status" value="{{ current_status }}">
+    {% endif %}
+
+    <button type="submit">Search</button>
+</form>
 
 <table>
     <thead>

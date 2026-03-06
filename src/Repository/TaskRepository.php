@@ -16,6 +16,31 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    public function findFilteredTasks(?string $search, ?string $status)
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        // $qb->andWhere('t.owner = :user')
+        //    ->setParameter('user', $this->getUser());
+
+        if ($status === 'done') {
+            $qb->andWhere('t.isDone = :done')
+                ->setParameter('done', true);
+        } elseif ($status === 'open') {
+            $qb->andWhere('t.isDone = :done')
+                ->setParameter('done', false);
+        }
+
+        if ($search) {
+            $qb->andWhere('t.title LIKE :search')
+                ->setParameter('search', '%' . $search . '%');
+        }
+
+        return $qb->orderBy('t.createdAt', 'DESC')
+                  ->getQuery()
+                  ->getResult();
+    }
+
     //    /**
     //     * @return Task[] Returns an array of Task objects
     //     */

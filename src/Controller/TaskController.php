@@ -21,32 +21,14 @@ final class TaskController extends AbstractController
                           TaskRepository $taskRepository
     ): Response {
         $status = $request->query->get('status');
+        $search = $request->query->get('search');
 
-        if ($status === 'done') {
-            $tasks = $taskRepository->findBy(
-                [
-                    //'owner' => $this->getUser(),
-                    'isDone' => true
-                ], 
-                ['createdAt' => 'DESC']);
-        } elseif ($status === 'open') {
-            $tasks = $taskRepository->findBy(
-                [
-                    //'owner' => $this->getUser(),
-                    'isDone' => false
-                ], 
-                ['createdAt' => 'DESC']);
-        } else {
-            $tasks = $taskRepository->findBy(
-                [
-                    //'owner' => $this->getUser()
-                ], 
-                ['createdAt' => 'DESC']);
-        }
+        $tasks = $taskRepository->findFilteredTasks($search, $status);
 
         return $this->render('task/index.html.twig', [
             'tasks' => $tasks,
-            'current_status' => $status
+            'current_status' => $status,
+            'current_search' => $search,
         ]);
     }
 
