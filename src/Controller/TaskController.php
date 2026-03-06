@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 use App\Repository\TaskRepository;
-use App\Repository\UserRepository;
 
 use App\Entity\Task;
 use App\Form\TaskType;
@@ -23,7 +22,10 @@ final class TaskController extends AbstractController
         $status = $request->query->get('status');
         $search = $request->query->get('search');
 
-        $tasks = $taskRepository->findFilteredTasks($search, $status);
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $tasks = $taskRepository->findFilteredTasks($search, $status, $user);
 
         return $this->render('task/index.html.twig', [
             'tasks' => $tasks,
@@ -34,8 +36,7 @@ final class TaskController extends AbstractController
 
     #[Route('/tasks/new', name: 'app_task_new')]
     public function new(Request $request, 
-                        EntityManagerInterface $entityManager,
-                        UserRepository $userRepository
+                        EntityManagerInterface $entityManager
     ): Response {
         $task = new Task();
 
@@ -44,10 +45,7 @@ final class TaskController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            //$task->setOwner($this->getUser());
-
-            $user = $userRepository->findOneBy([]);
-            $task->setOwner($user);
+            $task->setOwner($this->getUser());
 
             $entityManager->persist($task);
             $entityManager->flush();
@@ -65,6 +63,8 @@ final class TaskController extends AbstractController
                          Request $request, 
                          EntityManagerInterface $entityManager
     ): Response {
+        $this->denyAccessUnlessOwner($task);
+
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
@@ -85,6 +85,8 @@ final class TaskController extends AbstractController
                            Request $request, 
                            EntityManagerInterface $entityManager
     ): Response {
+        $this->denyAccessUnlessOwner($task);
+
         if ($this->isCsrfTokenValid('delete'.$task->getId(), $request->request->get('_token'))) {
             $entityManager->remove($task);
             $entityManager->flush();
@@ -100,6 +102,8 @@ final class TaskController extends AbstractController
                            Request $request,
                            EntityManagerInterface $entityManager
     ): Response {
+        $this->denyAccessUnlessOwner($task);
+
         if ($this->isCsrfTokenValid('toggle'.$task->getId(), $request->request->get('_token'))) {
             $task->setIsDone(!$task->isDone());
             $entityManager->flush();
@@ -108,6 +112,13 @@ final class TaskController extends AbstractController
         }
 
         return $this->redirectToRoute('app_task_index');
+    }
+
+    private function denyAccessUnlessOwner(Task $task): void
+    {
+        if ($task->getOwner() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You do not own this task.');
+        }
     }
 }
 

@@ -6,6 +6,8 @@ use App\Entity\Task;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+use App\Entity\User;
+
 /**
  * @extends ServiceEntityRepository<Task>
  */
@@ -16,12 +18,11 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function findFilteredTasks(?string $search, ?string $status)
+    public function findFilteredTasks(?string $search, ?string $status, User $user): array
     {
-        $qb = $this->createQueryBuilder('t');
-
-        // $qb->andWhere('t.owner = :user')
-        //    ->setParameter('user', $this->getUser());
+        $qb = $this->createQueryBuilder('t')
+                   ->andWhere('t.owner = :user')
+                   ->setParameter('user', $user);
 
         if ($status === 'done') {
             $qb->andWhere('t.isDone = :done')
