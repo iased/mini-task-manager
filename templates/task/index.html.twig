@@ -8,6 +8,13 @@
 
 <a href="{{ path('app_task_new') }}">Create Task</a>
 
+<p>
+    Filter:
+    <a href="{{ path('app_task_index') }}">All</a> |
+    <a href="{{ path('app_task_index', {status: 'open'}) }}">Open</a> |
+    <a href="{{ path('app_task_index', {status: 'done'}) }}">Done</a>
+</p>
+
 <table>
     <thead>
         <tr>
