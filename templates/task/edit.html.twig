@@ -3,17 +3,33 @@
 {% block title %}Edit Task{% endblock %}
 
 {% block body %}
+<section class="tasks-page">
+    <div class="form-card">
+        <div class="form-header">
+            <h1 class="form-title">Edit task</h1>
+            <p class="form-subtitle">Update your task details below</p>
+        </div>
 
-<h1>Edit Task</h1>
+        {{ form_start(form, {'attr': {'class': 'task-form'}}) }}
 
-{{ form_start(form) }}
-    {{ form_row(form.title) }}
-    {{ form_row(form.description) }}
-    {{ form_row(form.isDone) }}
+            <div class="form-group">
+                {{ form_label(form.title, 'Title', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.title, {'attr': {'class': 'form-input', 'placeholder': 'Enter task title'}}) }}
+                {{ form_errors(form.title) }}
+            </div>
 
-    <button>Save</button>
-{{ form_end(form) }}
+            <div class="form-group">
+                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-textarea', 'placeholder': 'Add details (optional)'}}) }}
+                {{ form_errors(form.description) }}
+            </div>
 
-<a href="{{ path('app_task_index') }}">Cancel</a>
+            <div class="form-actions">
+                <a href="{{ path('app_task_index') }}" class="secondary-button">Cancel</a>
+                <button type="submit" class="primary-button">Save changes</button>
+            </div>
 
+        {{ form_end(form, {'render_rest': false}) }}
+    </div>
+</section>
 {% endblock %}
