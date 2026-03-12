@@ -15,6 +15,16 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class TaskController extends AbstractController
 {
+    #[Route('/', name: 'app_home')]
+    public function home(): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_task_index');
+        }
+
+        return $this->redirectToRoute('app_login');
+    }
+
     #[Route('/tasks', name: 'app_task_index')]
     public function index(Request $request,
                           TaskRepository $taskRepository

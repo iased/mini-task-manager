@@ -22,7 +22,7 @@ class Task
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?bool $isDone = null;
+    private ?bool $isDone = false;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
