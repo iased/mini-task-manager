@@ -36,13 +36,13 @@ class Task
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Bucharest'));
     }
 
     #[ORM\PreUpdate]
     public function updateTimestamp(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Bucharest'));
     }
 
     public function getId(): ?int

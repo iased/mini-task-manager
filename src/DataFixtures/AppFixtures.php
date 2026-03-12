@@ -67,7 +67,7 @@ class AppFixtures extends Fixture
             $task->setDescription($taskData['description']);
             $task->setIsDone($taskData['done']);
             $task->setOwner($user);
-            $task->setCreatedAt(new \DateTimeImmutable());
+            $task->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Europe/Bucharest')));
 
             $manager->persist($task);
         }
@@ -106,7 +106,7 @@ class AppFixtures extends Fixture
             $task->setDescription($taskData['description']);
             $task->setIsDone($taskData['done']);
             $task->setOwner($dev);
-            $task->setCreatedAt(new \DateTimeImmutable());
+            $task->setCreatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Europe/Bucharest')));
 
             $manager->persist($task);
         }
